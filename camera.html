@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camera — EJ</title>
+<meta name="description" content="A live camera preview, built into EJ's resume site">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/camera.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="topnav">
+    <a href="index.html" class="brand">EJ</a>
+    <div class="nav-links">
+      <a href="index.html">Resume</a>
+      <a href="snake.html">Snake</a>
+      <a href="camera.html" class="active">Camera</a>
+    </div>
+  </nav>
+
+  <section data-reveal style="margin-top:12px;">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <h2 class="sec-title">Optical Sensor</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="panel-frame">
+      <div class="panel-hud">
+        <div class="spec"><div class="k">STATUS</div><div class="v" id="cam-status">Idle</div></div>
+      </div>
+
+      <div class="cam-wrap">
+        <video id="cam-video" autoplay playsinline muted></video>
+        <div class="overlay show" id="cam-overlay">
+          <p class="eyebrow" id="cam-title">CAMERA OFF</p>
+          <p class="muted" id="cam-msg">Grant camera access to begin live capture. Nothing leaves your browser.</p>
+          <button class="print-btn" id="cam-enable">Enable Camera</button>
+        </div>
+      </div>
+
+      <div class="cam-controls">
+        <button class="print-btn" id="cam-capture" disabled>Capture Frame</button>
+        <button class="print-btn" id="cam-stop" disabled>Stop Camera</button>
+        <a class="print-btn" id="cam-download" href="#" download="capture.png" hidden>Download</a>
+      </div>
+
+      <canvas id="cam-canvas" hidden></canvas>
+      <div class="cam-snapshot" id="cam-snapshot-wrap" hidden>
+        <p class="eyebrow">LAST CAPTURE</p>
+        <img id="cam-snapshot" alt="Captured frame">
+      </div>
+
+      <p class="hint">Camera access is requested only when you click Enable, the stream stays local, and it stops the moment you leave this page.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>REV. 2026-08 · BUILT AS A STATIC PAGE</span>
+  </footer>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/camera.js"></script>
+</body>
+</html>

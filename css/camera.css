@@ -1,0 +1,38 @@
+.cam-wrap{
+  position:relative;
+  max-width:480px;
+  margin:0 auto;
+}
+#cam-video{
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  display:block;
+  background:#16202B;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  transform:scaleX(-1); /* mirror, like a normal front-camera preview */
+}
+.cam-controls{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.cam-controls button:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+.cam-snapshot{
+  margin-top:20px;
+  padding-top:18px;
+  border-top:1px solid var(--line-soft);
+  text-align:center;
+}
+.cam-snapshot img{
+  max-width:220px;
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake — EJ</title>
+<meta name="description" content="A snake game, built into EJ's resume site">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/snake.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="topnav">
+    <a href="index.html" class="brand">EJ</a>
+    <div class="nav-links">
+      <a href="index.html">Resume</a>
+      <a href="snake.html" class="active">Snake</a>
+      <a href="camera.html">Camera</a>
+    </div>
+  </nav>
+
+  <section data-reveal style="margin-top:12px;">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <h2 class="sec-title">Self-Test — Snake</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="panel-frame">
+      <div class="panel-hud">
+        <div class="spec"><div class="k">SCORE</div><div class="v" id="score">0</div></div>
+        <div class="spec"><div class="k">HIGH SCORE</div><div class="v" id="highscore">0</div></div>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="game" width="400" height="400"></canvas>
+        <div class="overlay show" id="overlay">
+          <p class="eyebrow" id="overlay-title">READY</p>
+          <p class="muted" id="overlay-msg">Press start, an arrow key, or WASD</p>
+          <button class="print-btn" id="start-btn">Start</button>
+        </div>
+      </div>
+
+      <div class="dpad">
+        <button data-dir="0,-1" aria-label="Up">↑</button>
+        <button data-dir="-1,0" aria-label="Left">←</button>
+        <button data-dir="0,1" aria-label="Down">↓</button>
+        <button data-dir="1,0" aria-label="Right">→</button>
+      </div>
+
+      <p class="hint">Arrow keys / WASD to steer · space to start · swipe on mobile</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>REV. 2026-08 · BUILT AS A STATIC PAGE</span>
+  </footer>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/snake.js"></script>
+</body>
+</html>
