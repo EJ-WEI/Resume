@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A* Pathfinder — EJ</title>
+<meta name="description" content="An A* pathfinding visualizer, built into EJ's resume site">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/astar.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="topnav">
+    <a href="index.html" class="brand">EJ</a>
+    <div class="nav-links">
+      <a href="index.html">Resume</a>
+      <a href="snake.html">Snake</a>
+      <a href="camera.html">Camera</a>
+      <a href="astar.html" class="active">A*</a>
+    </div>
+  </nav>
+
+  <section data-reveal style="margin-top:12px;">
+    <div class="sec-head">
+      <span class="sec-num">08</span>
+      <h2 class="sec-title">Pathfinder — A*</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="panel-frame">
+      <div class="mode-select" role="radiogroup" aria-label="Cell mode">
+        <label class="mode-pill active">
+          <input type="radio" name="mode" value="start" checked> Start
+        </label>
+        <label class="mode-pill">
+          <input type="radio" name="mode" value="end"> End
+        </label>
+        <label class="mode-pill">
+          <input type="radio" name="mode" value="wall"> Wall
+        </label>
+        <label class="mode-pill">
+          <input type="radio" name="mode" value="clear"> Clear
+        </label>
+      </div>
+
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch start"></span>Start</span>
+        <span class="legend-item"><span class="legend-swatch end"></span>End</span>
+        <span class="legend-item"><span class="legend-swatch wall"></span>Wall</span>
+      </div>
+
+      <div class="board-wrap">
+        <div id="board" class="astar-board"></div>
+      </div>
+
+      <p class="hint">Pick a mode above, then click a cell on the grid.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>REV. 2026-08 · BUILT AS A STATIC PAGE</span>
+  </footer>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/astar.js"></script>
+</body>
+</html>

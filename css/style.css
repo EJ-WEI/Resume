@@ -1,14 +1,17 @@
 :root{
-  --paper:      #EDF0F2;
-  --paper-2:    #E3E8EB;
-  --ink:        #16202B;
-  --ink-soft:   #4B5A66;
-  --line:       #B8C4CC;
-  --line-soft:  #D3DBE0;
+  --paper:      #12171B;
+  --paper-2:    #171E23;
+  --ink:        #E7ECEE;
+  --ink-soft:   #93A3AC;
+  --line:       #33414A;
+  --line-soft:  #222C33;
   --charge:     #E0972E;
-  --charge-ink: #7A4F0F;
-  --circuit:    #2F6F5E;
-  --card:       #F7F8F6;
+  --charge-ink: #F3BB6B;
+  --circuit:    #fb4c9d;
+  --circuit:    #7beaf1;
+  /* --circuit:    #7C93F5; */
+  /* --circuit:    #4FB99B; */
+  --card:       #171E23;
   --radius:     2px;
   --max:        860px;
 }
@@ -342,6 +345,17 @@ footer{
 }
 
 @media print{
+  :root{
+    --paper:      #fff;
+    --paper-2:    #E3E8EB;
+    --ink:        #16202B;
+    --ink-soft:   #4B5A66;
+    --line:       #B8C4CC;
+    --line-soft:  #D3DBE0;
+    --charge-ink: #7A4F0F;
+    --circuit:    #2F6F5E;
+    --card:       #F7F8F6;
+  }
   body{ background:#fff; }
   .print-btn{ display:none; }
   .topnav{ display:none; }
