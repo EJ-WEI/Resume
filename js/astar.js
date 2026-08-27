@@ -23,8 +23,18 @@
   let endPos = null;
   let running = false;
 
+  // `grid` is the app's own model of the board, parallel to the DOM: one
+  // entry per cell holding a reference to its <div> (`el`) plus its current
+  // `type` ('empty' | 'start' | 'end' | 'wall'). The A* search reads/writes
+  // this instead of touching the DOM directly (except to add/remove CSS
+  // classes for highlighting), and it's addressed as grid[row][col].
   const grid = [];
 
+  // Build the 30x30 board once: one <div class="cell"> per grid square,
+  // wired to handleClick so the user can paint start/end/wall cells on it.
+  // dataset.row/col aren't read by the app logic (grid[r][c] already knows
+  // its own position) — they exist so a cell's coordinates are visible/
+  // queryable from the DOM (devtools, tests, CSS attribute selectors).
   for (let r = 0; r < ROWS; r++) {
     const row = [];
     for (let c = 0; c < COLS; c++) {
@@ -39,6 +49,11 @@
     grid.push(row);
   }
 
+  // Change what a cell *is* (empty/start/end/wall) — this is board editing,
+  // separate from the temporary search-progress highlighting below. Swaps
+  // the relevant CSS class and clears any leftover search visualization,
+  // since editing the board mid-way would make an old frontier/path
+  // rendering describe a search that no longer matches the current layout.
   function setType(r, c, type) {
     const entry = grid[r][c];
     entry.type = type;
@@ -47,6 +62,10 @@
     clearOverlay();
   }
 
+  // Strip the search-progress classes (frontier/visited/current/path) from
+  // every cell, without touching start/end/wall. Called before each new run
+  // and whenever the board is edited, so stale highlighting from a previous
+  // search never lingers on screen.
   function clearOverlay() {
     for (const row of grid) {
       for (const entry of row) {
@@ -55,16 +74,28 @@
     }
   }
 
+  // Update the one-line status message under the Run button (e.g.
+  // "Searching…", "Path found — 15 steps."). `warn` switches it to the
+  // warning color for problem states like "no path found" or a missing
+  // start/end, instead of the normal muted info color.
   function setStatus(text, warn) {
     statusEl.textContent = text;
     statusEl.classList.toggle('warn', !!warn);
   }
 
+  // Click handler for a single board cell. What it does depends on
+  // `currentMode`, which mirrors the selected radio button in the toolbar.
+  // Ignored entirely while a search animation is running, since the board
+  // (start/end/walls) must stay fixed for the in-progress search to still
+  // make sense — setInteractive() also disables the mode radios for the
+  // same reason, this is just the second line of defense.
   function handleClick(r, c) {
     if (running) return;
     const entry = grid[r][c];
 
     if (currentMode === 'clear') {
+      // Erase this cell back to empty, and forget it as start/end if it
+      // was one so a stale startPos/endPos doesn't point at an empty cell.
       if (entry.type === 'start') startPos = null;
       if (entry.type === 'end') endPos = null;
       setType(r, c, 'empty');
@@ -72,14 +103,19 @@
     }
 
     if (currentMode === 'wall') {
+      // Start/end are never turned into walls by a wall click — they must
+      // be explicitly cleared first. Otherwise, toggle: wall <-> empty.
       if (entry.type === 'start' || entry.type === 'end') return;
       setType(r, c, entry.type === 'wall' ? 'empty' : 'wall');
       return;
     }
 
     if (currentMode === 'start') {
-      if (entry.type === 'start') return;
+      if (entry.type === 'start') return; // clicking the existing start is a no-op
+      // Only one start cell can exist: clear the old one first.
       if (startPos) setType(startPos.r, startPos.c, 'empty');
+      // If the clicked cell was the end, moving start onto it displaces
+      // the end (a cell can't be both at once).
       if (endPos && endPos.r === r && endPos.c === c) endPos = null;
       setType(r, c, 'start');
       startPos = { r, c };
@@ -87,6 +123,7 @@
     }
 
     if (currentMode === 'end') {
+      // Mirror image of the 'start' branch above.
       if (entry.type === 'end') return;
       if (endPos) setType(endPos.r, endPos.c, 'empty');
       if (startPos && startPos.r === r && startPos.c === c) startPos = null;
@@ -95,6 +132,9 @@
     }
   }
 
+  // Keep `currentMode` in sync with whichever mode radio is checked, and
+  // move the `.active` styling to match (the radios themselves are visually
+  // hidden pills — see astar.css — so the label needs its own active class).
   document.querySelectorAll('input[name="mode"]').forEach((radio) => {
     radio.addEventListener('change', () => {
       currentMode = radio.value;
@@ -103,6 +143,10 @@
     });
   });
 
+  // Promise-based delay, used to pace the search animation: `await
+  // sleep(STEP_DELAY)` pauses the async runAstar()/tracePath() functions
+  // for STEP_DELAY ms without blocking the page (a plain loop or a
+  // synchronous wait would freeze the UI instead of animating it).
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   // A*'s heuristic h(n): a fast, optimistic *estimate* of the remaining
@@ -142,20 +186,29 @@
     return result;
   }
 
+  // Lock or unlock board editing while a search animation plays. Disabling
+  // the radios prevents switching modes mid-run, and toggling the
+  // `.running` class (see astar.css) sets pointer-events:none on the board
+  // so cell clicks can't edit start/end/walls out from under the search
+  // that's currently reading them.
   function setInteractive(enabled) {
     document.querySelectorAll('input[name="mode"]').forEach((r) => { r.disabled = !enabled; });
     board.classList.toggle('running', !enabled);
   }
 
+  // Entry point wired to the Run button: sets up A* state for the current
+  // start/end/walls, then animates the search to completion. Declared
+  // `async` so it can `await sleep(...)` between steps further down,
+  // pausing this function without blocking the rest of the page.
   async function runAstar() {
-    if (running) return;
+    if (running) return; // ignore extra clicks while already animating
     if (!startPos || !endPos) {
       setStatus('Set a start and an end cell first.', true);
       return;
     }
 
     running = true;
-    clearOverlay();
+    clearOverlay(); // wipe any highlighting left over from a previous run
     setInteractive(false);
     runBtn.disabled = true;
     runBtn.textContent = 'Running…';
@@ -282,6 +335,9 @@
         setStatus('No path found — walls block every route.', true);
       }
     } finally {
+      // Always restore board interactivity, even if something above threw —
+      // otherwise a bug in the search could leave the board permanently
+      // locked with the Run button stuck on "Running…".
       running = false;
       setInteractive(true);
       runBtn.disabled = false;
@@ -299,8 +355,10 @@
       path.push(node);
       node = state[node.r][node.c].parent;
     }
-    path.reverse();
+    path.reverse(); // was end -> start; flip so it renders start -> end
 
+    // Reveal the path one cell at a time (rather than all at once) so the
+    // final route is as much a part of the animation as the search was.
     for (const { r, c } of path) {
       grid[r][c].el.classList.remove('current', 'visited', 'frontier');
       grid[r][c].el.classList.add('path');
@@ -309,5 +367,6 @@
     setStatus(`Path found — ${path.length - 1} steps.`, false);
   }
 
+  // Kick off a search whenever the Run button is clicked.
   runBtn.addEventListener('click', runAstar);
 })();
