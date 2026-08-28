@@ -8,22 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/snake.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/snake.css">
 </head>
-<body>
+<body data-page="snake" data-base="../">
 <div class="wrap">
 
-  <nav class="topnav">
-    <a href="index.html" class="brand">EJ</a>
-    <div class="nav-links">
-      <a href="index.html">Resume</a>
-      <a href="snake.html" class="active">Snake</a>
-      <a href="camera.html">Camera</a>
-      <a href="astar.html">A*</a>
-      <a href="bezier.html">Bezier</a>
-    </div>
-  </nav>
+  <nav class="topnav" id="site-nav"></nav>
 
   <section data-reveal style="margin-top:12px;">
     <div class="sec-head">
@@ -58,13 +49,12 @@
     </div>
   </section>
 
-  <footer>
-    <span>REV. 2026-08 · BUILT AS A STATIC PAGE</span>
-  </footer>
+  <footer id="site-footer"></footer>
 
 </div>
 
-<script src="js/main.js"></script>
-<script src="js/snake.js"></script>
+<script src="../js/shell.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/snake.js"></script>
 </body>
 </html>

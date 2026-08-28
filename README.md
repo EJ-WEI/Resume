@@ -7,18 +7,33 @@ and easy to edit.
 
 ```
 ej-resume/
-├── index.html      Resume page
-├── snake.html       Snake game page ("Self-Test")
-├── camera.html       Live camera preview page ("Optical Sensor")
+├── index.html            Resume page (must stay at the root)
+├── projects/
+│   ├── snake.html         Snake game page ("Self-Test")
+│   ├── camera.html        Live camera preview page ("Optical Sensor")
+│   ├── astar.html         A* pathfinding visualizer
+│   └── bezier.html        Bezier curve / De Casteljau visualizer
 ├── css/
-│   ├── style.css    Shared styles: nameplate, sections, nav, panel/overlay, tokens
-│   ├── snake.css     Snake-only styles
-│   └── camera.css    Camera-only styles
+│   ├── style.css          Shared styles: nameplate, sections, nav, panel/overlay, tokens
+│   ├── snake.css          Snake-only styles
+│   ├── camera.css         Camera-only styles
+│   ├── astar.css          A*-only styles
+│   └── bezier.css         Bezier-only styles
 └── js/
-    ├── main.js       Shared behavior (scroll reveal)
-    ├── snake.js       Game logic
-    └── camera.js      Camera permission + live preview + capture
+    ├── shell.js            Renders the shared nav + footer from one page list
+    ├── main.js             Shared behavior (scroll reveal)
+    ├── snake.js            Game logic
+    ├── camera.js            Camera permission + live preview + capture
+    ├── astar.js            A* search logic
+    └── bezier.js           Bezier curve / De Casteljau logic
 ```
+
+The nav and footer aren't hand-written on every page — `js/shell.js` renders
+them from one `PAGES` list into `<nav id="site-nav">` / `<footer
+id="site-footer">` placeholders, based on two `data-*` attributes each page
+sets on `<body>`: `data-page` (its id, so shell.js knows which nav link is
+"active") and `data-base` (the relative path back to the site root — `""`
+for `index.html`, `"../"` for anything in `projects/`).
 
 The camera page asks for permission only when the visitor clicks **Enable
 Camera** — nothing is requested automatically, and nothing is uploaded
@@ -51,9 +66,17 @@ Open `index.html` and search for these placeholders, replacing each:
 `snake.html` needs no editing to work, but the high score, speed, and
 colors are all adjustable in `js/snake.js` if you want to tune it.
 
-To add another page later: copy `index.html` as a starting template,
-keep the `<link>`/`<script>` tags to `css/style.css` and `js/main.js`,
-and add a nav link to it in both existing pages' `.nav-links`.
+To add another page later:
+
+1. Copy an existing `projects/*.html` page as a starting template — keep
+   the `<link>` tags to `../css/style.css`, the `<nav id="site-nav">` /
+   `<footer id="site-footer">` placeholders, the `data-page` /
+   `data-base="../"` attributes on `<body>`, and the `<script>` tags to
+   `../js/shell.js` and `../js/main.js`.
+2. Add one entry for it to the `PAGES` array at the top of `js/shell.js`.
+
+That's it — every page's nav updates automatically, since they all render
+from that one list.
 
 ## 3. Publish it so it's browsable anywhere (GitHub Pages)
 

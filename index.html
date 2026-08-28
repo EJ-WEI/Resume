@@ -10,19 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body data-page="resume" data-base="">
 <div class="wrap">
 
-  <nav class="topnav">
-    <a href="index.html" class="brand">EJ</a>
-    <div class="nav-links">
-      <a href="index.html" class="active">Resume</a>
-      <a href="snake.html">Snake</a>
-      <a href="camera.html">Camera</a>
-      <a href="astar.html">A*</a>
-      <a href="bezier.html">Bezier</a>
-    </div>
-  </nav>
+  <nav class="topnav" id="site-nav"></nav>
 
   <div class="nameplate">
     <span class="tick-bl"></span><span class="tick-br"></span>
@@ -122,13 +113,11 @@
     </div>
   </section>
 
-  <footer>
-    <span>REV. 2026-08 · BUILT AS A STATIC PAGE</span>
-    <button class="print-btn" onclick="window.print()">Download as PDF</button>
-  </footer>
+  <footer id="site-footer" data-extra="print"></footer>
 
 </div>
 
+<script src="js/shell.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
