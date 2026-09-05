@@ -25,18 +25,30 @@
 
     <div class="panel-frame">
       <div class="mode-select" role="radiogroup" aria-label="Cell mode">
-        <label class="mode-pill active">
-          <input type="radio" name="mode" value="start" checked> Start
-        </label>
-        <label class="mode-pill">
-          <input type="radio" name="mode" value="end"> End
-        </label>
-        <label class="mode-pill">
-          <input type="radio" name="mode" value="wall"> Wall
-        </label>
-        <label class="mode-pill">
-          <input type="radio" name="mode" value="clear"> Clear
-        </label>
+        <div class="mode-row">
+          <label class="mode-pill active">
+            <input type="radio" name="mode" value="start" checked> Start
+          </label>
+          <span class="mode-hint">Click a grid cell to set it as the starting point.</span>
+        </div>
+        <div class="mode-row">
+          <label class="mode-pill">
+            <input type="radio" name="mode" value="end"> End
+          </label>
+          <span class="mode-hint">Click a grid cell to set it as the end point.</span>
+        </div>
+        <div class="mode-row">
+          <label class="mode-pill">
+            <input type="radio" name="mode" value="wall"> Wall
+          </label>
+          <span class="mode-hint">Click a cell, or press and drag, to mark cells as walls.</span>
+        </div>
+        <div class="mode-row">
+          <label class="mode-pill">
+            <input type="radio" name="mode" value="erase"> Erase Wall
+          </label>
+          <span class="mode-hint">Click a wall, or press and drag, to erase walls.</span>
+        </div>
       </div>
 
       <div class="legend">
@@ -51,14 +63,23 @@
 
       <div class="controls-row">
         <button class="print-btn" id="run-btn">Run</button>
+        <button class="print-btn" id="clear-btn">Clear Board</button>
         <span class="run-status" id="run-status"></span>
       </div>
 
+      <p class="hint board-caption">Board 1 — baseline A*: when candidates tie exactly, whichever was discovered first wins.</p>
       <div class="board-wrap">
         <div id="board" class="astar-board"></div>
       </div>
+      <p class="run-status board-status" id="board1-status"></p>
 
-      <p class="hint">Pick a mode above, then click a cell on the grid.</p>
+      <p class="hint board-caption">Board 2 — same start/end/walls, but ties are broken toward the candidate already closer to the target.</p>
+      <div class="board-wrap">
+        <div id="board2" class="astar-board mirror"></div>
+      </div>
+      <p class="run-status board-status" id="board2-status"></p>
+
+      <p class="hint">Pick a mode above, then click (or press and drag, for walls) on the grid. Use Clear Board to reset everything.</p>
     </div>
   </section>
 
