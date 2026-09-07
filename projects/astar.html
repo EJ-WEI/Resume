@@ -29,18 +29,21 @@
           <label class="mode-pill active">
             <input type="radio" name="mode" value="start" checked> Start
           </label>
+          <span class="legend-swatch start"></span>
           <span class="mode-hint">Click a grid cell to set it as the starting point.</span>
         </div>
         <div class="mode-row">
           <label class="mode-pill">
             <input type="radio" name="mode" value="end"> End
           </label>
+          <span class="legend-swatch end"></span>
           <span class="mode-hint">Click a grid cell to set it as the end point.</span>
         </div>
         <div class="mode-row">
           <label class="mode-pill">
             <input type="radio" name="mode" value="wall"> Wall
           </label>
+          <span class="legend-swatch wall"></span>
           <span class="mode-hint">Click a cell, or press and drag, to mark cells as walls.</span>
         </div>
         <div class="mode-row">
@@ -49,22 +52,16 @@
           </label>
           <span class="mode-hint">Click a wall, or press and drag, to erase walls.</span>
         </div>
-      </div>
-
-      <div class="legend">
-        <span class="legend-item"><span class="legend-swatch start"></span>Start</span>
-        <span class="legend-item"><span class="legend-swatch end"></span>End</span>
-        <span class="legend-item"><span class="legend-swatch wall"></span>Wall</span>
-        <span class="legend-item"><span class="legend-swatch frontier"></span>Frontier</span>
-        <span class="legend-item"><span class="legend-swatch visited"></span>Visited</span>
-        <span class="legend-item"><span class="legend-swatch current"></span>Current</span>
-        <span class="legend-item"><span class="legend-swatch path"></span>Path</span>
+        <div class="mode-row">
+          <label class="interval-label" for="step-delay">Animation interval (ms)</label>
+          <input type="number" id="step-delay" class="interval-input" min="0" step="10" value="30">
+        </div>
       </div>
 
       <div class="controls-row">
         <button class="print-btn" id="run-btn">Run</button>
+        <button class="print-btn" id="stop-btn" disabled>Stop</button>
         <button class="print-btn" id="clear-btn">Clear Board</button>
-        <span class="run-status" id="run-status"></span>
       </div>
 
       <p class="hint board-caption">Board 1 — baseline A*: when candidates tie exactly, whichever was discovered first wins.</p>

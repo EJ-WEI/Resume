@@ -7,12 +7,12 @@
 (() => {
   const ROWS = 15;
   const COLS = 30;
-  const STEP_DELAY = 30;
   const board = document.getElementById('board');
   const board2 = document.getElementById('board2');
   const runBtn = document.getElementById('run-btn');
+  const stopBtn = document.getElementById('stop-btn');
   const clearBtn = document.getElementById('clear-btn');
-  const statusEl = document.getElementById('run-status');
+  const stepDelayInput = document.getElementById('step-delay');
   const board1StatusEl = document.getElementById('board1-status');
   const board2StatusEl = document.getElementById('board2-status');
 
@@ -30,6 +30,7 @@
   let endPos = null;
   let running = false;
   let dragging = false; // true while the mouse button is held down over the board
+  let stopRequested = false; // set by the Stop button; checked once per search iteration
 
   // `grid` is the app's own model of the board, parallel to the DOM: one
   // entry per cell holding a reference to its <div> on board 1 (`el`) and
@@ -129,23 +130,15 @@
     clearOverlay();
     startPos = null;
     endPos = null;
-    setStatus('', false);
     setBoardStatus(1, '', false);
     setBoardStatus(2, '', false);
   }
 
-  // Update the one-line status message under the Run button (e.g.
-  // "Searching…", or a validation error). `warn` switches it to the
-  // warning color for problem states like "no path found" or a missing
-  // start/end, instead of the normal muted info color.
-  function setStatus(text, warn) {
-    statusEl.textContent = text;
-    statusEl.classList.toggle('warn', !!warn);
-  }
-
-  // Same as setStatus, but for the per-board result line under board 1 or
-  // board 2 — each board's search result (steps + cells expanded) is
-  // reported separately since the two searches can now genuinely differ.
+  // Updates the result line under board 1 or board 2 — each board's search
+  // result (steps + cells expanded) is reported separately since the two
+  // searches can genuinely differ. `warn` switches it to the warning color
+  // for problem states (no path found, missing start/end) instead of the
+  // normal muted info color.
   function setBoardStatus(boardNum, text, warn) {
     const el = boardNum === 1 ? board1StatusEl : board2StatusEl;
     el.textContent = text;
@@ -213,8 +206,8 @@
   });
 
   // Promise-based delay, used to pace the search animation: `await
-  // sleep(STEP_DELAY)` pauses the async runAstar()/tracePath() functions
-  // for STEP_DELAY ms without blocking the page (a plain loop or a
+  // sleep(getStepDelay())` pauses the async runSearch()/tracePath()
+  // functions between steps without blocking the page (a plain loop or a
   // synchronous wait would freeze the UI instead of animating it).
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -259,11 +252,22 @@
   // the radios prevents switching modes mid-run, and toggling the
   // `.running` class (see astar.css) sets pointer-events:none on the board
   // so cell clicks can't edit start/end/walls out from under the search
-  // that's currently reading them.
+  // that's currently reading them. Stop is the inverse of the rest: it only
+  // makes sense while a search is actually running.
   function setInteractive(enabled) {
     document.querySelectorAll('input[name="mode"]').forEach((r) => { r.disabled = !enabled; });
     board.classList.toggle('running', !enabled);
     clearBtn.disabled = !enabled;
+    stopBtn.disabled = enabled;
+  }
+
+  // Reads the animation delay (ms) from the interval input, falling back to
+  // a sane default if it's been left empty or set to something invalid.
+  // Read fresh on every sleep() call (rather than cached once) so changing
+  // it mid-run takes effect immediately on the next step.
+  function getStepDelay() {
+    const value = Number(stepDelayInput.value);
+    return Number.isFinite(value) && value >= 0 ? value : 30;
   }
 
   // Candidate-comparison rules used to pick the next cell to expand out of
@@ -333,6 +337,7 @@
     let openList = [{ r: startPos.r, c: startPos.c }];
     let current = { r: startPos.r, c: startPos.c };
     let found = false;
+    let stopped = false;
     // How many times a cell was popped off the open set and expanded before
     // the target was reached — this is the number the two boards are being
     // compared on, since a smarter tie-break should need fewer of them.
@@ -350,6 +355,10 @@
     // board 1's arbitrary tie-break makes it jump further/more often than
     // board 2's does).
     while (true) {
+      if (stopRequested) {
+        stopped = true;
+        break;
+      }
       // The current cell is the target — since it was only ever chosen as
       // "current" by being the best candidate in the open set, its g is
       // guaranteed optimal and we can stop instead of expanding it.
@@ -398,7 +407,7 @@
       for (const { r, c } of newlyOpened) {
         if (grid[r][c].type === 'empty') grid[r][c][key].classList.add('frontier');
       }
-      if (newlyOpened.length) await sleep(STEP_DELAY);
+      if (newlyOpened.length) await sleep(getStepDelay());
 
       // The current cell is fully expanded: move it from "open" to
       // "closed" (done, g is final) and fade its highlight from
@@ -429,14 +438,14 @@
       current = best;
       grid[current.r][current.c][key].classList.remove('frontier');
       grid[current.r][current.c][key].classList.add('current');
-      await sleep(STEP_DELAY);
+      await sleep(getStepDelay());
     }
 
     let pathLength = 0;
     if (found) {
       pathLength = await tracePath(state, key);
     }
-    return { found, expansions, pathLength };
+    return { found, stopped, expansions, pathLength };
   }
 
   // Reconstruct the shortest path by walking `parent` links backwards from
@@ -454,18 +463,22 @@
 
     // Reveal the path one cell at a time (rather than all at once) so the
     // final route is as much a part of the animation as the search was.
+    // Also interruptible: Stop should cut the trace-out short too, not just
+    // the search that precedes it.
     for (const { r, c } of path) {
+      if (stopRequested) break;
       const el = grid[r][c][key];
       el.classList.remove('current', 'visited', 'frontier');
       el.classList.add('path');
-      await sleep(STEP_DELAY);
+      await sleep(getStepDelay());
     }
     return path.length - 1;
   }
 
-  // Turns one board's { found, expansions, pathLength } result into the
-  // text shown in its status line.
-  function describeResult({ found, expansions, pathLength }) {
+  // Turns one board's { found, stopped, expansions, pathLength } result
+  // into the text shown in its status line.
+  function describeResult({ found, stopped, expansions, pathLength }) {
+    if (stopped) return `Stopped — ${expansions} cells expanded.`;
     if (!found) return `No path found — ${expansions} cells expanded.`;
     return `Path found — ${pathLength} steps (${expansions} cells expanded).`;
   }
@@ -474,20 +487,22 @@
   // board 2's tie-break search at the same time (via Promise.all, so their
   // `await sleep(...)` calls interleave and both animations play
   // simultaneously), then reports each board's own result once both are
-  // done. Declared `async` so the caller doesn't need to block on it.
+  // done. Declared `async` so the caller doesn't need to block on it. The
+  // button itself always just reads "Run" — only its disabled state and the
+  // per-board status lines reflect what's happening.
   async function runAstar() {
     if (running) return; // ignore extra clicks while already animating
     if (!startPos || !endPos) {
-      setStatus('Set a start and an end cell first.', true);
+      setBoardStatus(1, 'Set a start and an end cell first.', true);
+      setBoardStatus(2, 'Set a start and an end cell first.', true);
       return;
     }
 
     running = true;
+    stopRequested = false;
     clearOverlay(); // wipe any highlighting left over from a previous run
     setInteractive(false);
     runBtn.disabled = true;
-    runBtn.textContent = 'Running…';
-    setStatus('Searching…', false);
     setBoardStatus(1, 'Searching…', false);
     setBoardStatus(2, 'Searching…', false);
 
@@ -499,23 +514,26 @@
 
       setBoardStatus(1, describeResult(result1), !result1.found);
       setBoardStatus(2, describeResult(result2), !result2.found);
-      setStatus(
-        result1.found && result2.found ? 'Both boards finished.' : 'No path found — walls block every route.',
-        !(result1.found && result2.found)
-      );
     } finally {
       // Always restore board interactivity, even if something above threw —
       // otherwise a bug in the search could leave the board permanently
-      // locked with the Run button stuck on "Running…".
+      // locked out from further edits.
       running = false;
       setInteractive(true);
       runBtn.disabled = false;
-      runBtn.textContent = 'Run again';
     }
   }
 
   // Kick off a search whenever the Run button is clicked.
   runBtn.addEventListener('click', runAstar);
+
+  // Ask both in-progress searches to stop at their next opportunity — they
+  // poll `stopRequested` once per iteration, so this doesn't cut them off
+  // mid-step, just before the next one.
+  stopBtn.addEventListener('click', () => {
+    if (!running) return;
+    stopRequested = true;
+  });
 
   // Reset the whole board whenever the Clear Board button is clicked.
   clearBtn.addEventListener('click', clearBoard);
