@@ -16,28 +16,26 @@
 
   let stream = null;
 
-  function setStatus(text) { statusEl.textContent = text; }
+  // All text goes through I18N.bind with dictionary keys (see js/i18n.js)
+  // so it follows the language toggle.
+  function setStatus(key) { I18N.bind(statusEl, key); }
 
-  function showOverlay(title, msg, showEnable) {
-    overlayTitle.textContent = title;
-    overlayMsg.textContent = msg;
+  function showOverlay(titleKey, msgKey, showEnable) {
+    I18N.bind(overlayTitle, titleKey);
+    I18N.bind(overlayMsg, msgKey);
     enableBtn.style.display = showEnable ? 'inline-block' : 'none';
     overlay.classList.add('show');
   }
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    showOverlay(
-      'NOT AVAILABLE',
-      'This browser or connection doesn\u2019t support camera access here — it needs HTTPS (or localhost).',
-      false
-    );
-    setStatus('Unavailable');
+    showOverlay('camera.notAvailable', 'camera.notAvailableMsg', false);
+    setStatus('camera.unavailable');
     enableBtn.disabled = true;
   }
 
   async function enableCamera() {
     enableBtn.disabled = true;
-    setStatus('Requesting…');
+    setStatus('camera.requesting');
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user' },
@@ -48,18 +46,18 @@
       overlay.classList.remove('show');
       captureBtn.disabled = false;
       stopBtn.disabled = false;
-      setStatus('Live');
+      setStatus('camera.live');
     } catch (err) {
-      let msg = 'Something went wrong starting the camera.';
+      let msg = 'camera.errGeneric';
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        msg = 'Camera access was denied. Allow it in your browser\u2019s site settings, then try again.';
+        msg = 'camera.errDenied';
       } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-        msg = 'No camera was found on this device.';
+        msg = 'camera.errNotFound';
       } else if (err.name === 'NotReadableError') {
-        msg = 'The camera is already in use by another app.';
+        msg = 'camera.errInUse';
       }
-      showOverlay('CAMERA BLOCKED', msg, true);
-      setStatus('Blocked');
+      showOverlay('camera.blocked', msg, true);
+      setStatus('camera.blockedStatus');
       enableBtn.disabled = false;
     }
   }
@@ -73,8 +71,8 @@
     captureBtn.disabled = true;
     stopBtn.disabled = true;
     enableBtn.disabled = false;
-    setStatus('Idle');
-    showOverlay('CAMERA OFF', 'Grant camera access to begin live capture. Nothing leaves your browser.', true);
+    setStatus('camera.idle');
+    showOverlay('camera.off', 'camera.offMsg', true);
   }
 
   function captureFrame() {

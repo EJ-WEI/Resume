@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="green.title">Green Energy System — EJ</title>
+<meta name="description" data-i18n="green.description" data-i18n-attr="content" content="An interactive daily load-curve editor over time-of-use tariff bands, built into EJ's resume site">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/green-energy.css">
+</head>
+<body data-page="green" data-base="../">
+<div class="wrap">
+
+  <nav class="topnav" id="site-nav"></nav>
+
+  <section data-reveal style="margin-top:12px;">
+    <div class="sec-head">
+      <span class="sec-num">10</span>
+      <h2 class="sec-title" data-i18n="green.heading">Green Energy System — Load Curve</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="panel-frame">
+      <p class="green-intro" data-i18n="green.intro">A one-day load curve (96 × 15-minute points) drawn over Taipower's high-voltage three-tier time-of-use bands. The curve is a load <em>shape</em>; which hours count as peak, half-peak or off-peak depends on the day type, so switching the day type re-slices the background while the curve stays put.</p>
+
+      <div class="day-type-row" role="radiogroup" aria-label="Day type">
+        <span class="day-type-label" data-i18n="green.dayType">Day type</span>
+        <label class="mode-pill active"><input type="radio" name="day-type" value="summerWeekday" checked> <span data-i18n="green.day.summerWeekday">Summer weekday</span></label>
+        <label class="mode-pill"><input type="radio" name="day-type" value="nonSummerWeekday"> <span data-i18n="green.day.nonSummerWeekday">Non-summer weekday</span></label>
+        <label class="mode-pill"><input type="radio" name="day-type" value="summerSaturday"> <span data-i18n="green.day.summerSaturday">Summer Saturday</span></label>
+        <label class="mode-pill"><input type="radio" name="day-type" value="nonSummerSaturday"> <span data-i18n="green.day.nonSummerSaturday">Non-summer Saturday</span></label>
+        <label class="mode-pill"><input type="radio" name="day-type" value="offPeakDay"> <span data-i18n="green.day.offPeakDay">Off-peak day</span></label>
+      </div>
+
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch tou-peak"></span><span data-i18n="green.tou.peak">Peak</span></span>
+        <span class="legend-item"><span class="legend-swatch tou-halfPeak"></span><span data-i18n="green.tou.halfPeak">Half-peak</span></span>
+        <span class="legend-item"><span class="legend-swatch tou-saturdayHalfPeak"></span><span data-i18n="green.tou.saturdayHalfPeak">Saturday half-peak</span></span>
+        <span class="legend-item"><span class="legend-swatch tou-offPeak"></span><span data-i18n="green.tou.offPeak">Off-peak</span></span>
+        <span class="legend-item"><span class="legend-swatch curve"></span><span data-i18n="green.load">Load (kW)</span></span>
+        <span class="legend-item"><span class="legend-swatch contract"></span><span data-i18n="green.contract">Contract capacity</span></span>
+      </div>
+
+      <div class="green-canvas-wrap">
+        <canvas id="green-canvas" width="760" height="400"></canvas>
+      </div>
+
+      <div class="controls-row">
+        <button class="print-btn" id="reset-curve-btn" data-i18n="green.reset">Reset Curve</button>
+        <span class="run-status" id="curve-status"></span>
+      </div>
+
+      <table class="tou-stats" id="tou-stats">
+        <thead>
+          <tr>
+            <th data-i18n="green.stat.bucket">Time-of-use</th>
+            <th data-i18n="green.stat.hours">Hours</th>
+            <th data-i18n="green.stat.kwh">Energy (kWh)</th>
+            <th data-i18n="green.stat.max">Max demand (kW)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-tou="peak"><td><span class="legend-swatch tou-peak"></span><span data-i18n="green.tou.peak">Peak</span></td><td class="num" data-cell="hours"></td><td class="num" data-cell="kwh"></td><td class="num" data-cell="max"></td></tr>
+          <tr data-tou="halfPeak"><td><span class="legend-swatch tou-halfPeak"></span><span data-i18n="green.tou.halfPeak">Half-peak</span></td><td class="num" data-cell="hours"></td><td class="num" data-cell="kwh"></td><td class="num" data-cell="max"></td></tr>
+          <tr data-tou="saturdayHalfPeak"><td><span class="legend-swatch tou-saturdayHalfPeak"></span><span data-i18n="green.tou.saturdayHalfPeak">Saturday half-peak</span></td><td class="num" data-cell="hours"></td><td class="num" data-cell="kwh"></td><td class="num" data-cell="max"></td></tr>
+          <tr data-tou="offPeak"><td><span class="legend-swatch tou-offPeak"></span><span data-i18n="green.tou.offPeak">Off-peak</span></td><td class="num" data-cell="hours"></td><td class="num" data-cell="kwh"></td><td class="num" data-cell="max"></td></tr>
+        </tbody>
+      </table>
+
+      <p class="hint" data-i18n="green.hint">Drag a dot up or down to change that 15-minute interval's demand (1 kW steps). Hover for the exact value. Pick a day type to see how the same curve falls into different tariff bands.</p>
+    </div>
+  </section>
+
+  <footer id="site-footer"></footer>
+
+</div>
+
+<script src="../js/i18n.js"></script>
+<script src="../js/shell.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/green-energy.js"></script>
+</body>
+</html>

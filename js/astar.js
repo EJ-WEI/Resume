@@ -130,18 +130,20 @@
     clearOverlay();
     startPos = null;
     endPos = null;
-    setBoardStatus(1, '', false);
-    setBoardStatus(2, '', false);
+    setBoardStatus(1, null, null, false);
+    setBoardStatus(2, null, null, false);
   }
 
   // Updates the result line under board 1 or board 2 — each board's search
   // result (steps + cells expanded) is reported separately since the two
   // searches can genuinely differ. `warn` switches it to the warning color
   // for problem states (no path found, missing start/end) instead of the
-  // normal muted info color.
-  function setBoardStatus(boardNum, text, warn) {
+  // normal muted info color. `key` is a js/i18n.js dictionary key (null
+  // clears the line) and `params` fills its {placeholders}, so the text
+  // follows the language toggle.
+  function setBoardStatus(boardNum, key, params, warn) {
     const el = boardNum === 1 ? board1StatusEl : board2StatusEl;
-    el.textContent = text;
+    I18N.bind(el, key, params);
     el.classList.toggle('warn', !!warn);
   }
 
@@ -476,11 +478,11 @@
   }
 
   // Turns one board's { found, stopped, expansions, pathLength } result
-  // into the text shown in its status line.
+  // into the [key, params] pair for its status line.
   function describeResult({ found, stopped, expansions, pathLength }) {
-    if (stopped) return `Stopped — ${expansions} cells expanded.`;
-    if (!found) return `No path found — ${expansions} cells expanded.`;
-    return `Path found — ${pathLength} steps (${expansions} cells expanded).`;
+    if (stopped) return ['astar.stopped', { n: expansions }];
+    if (!found) return ['astar.noPath', { n: expansions }];
+    return ['astar.pathFound', { steps: pathLength, n: expansions }];
   }
 
   // Entry point wired to the Run button: runs board 1's baseline search and
@@ -493,8 +495,8 @@
   async function runAstar() {
     if (running) return; // ignore extra clicks while already animating
     if (!startPos || !endPos) {
-      setBoardStatus(1, 'Set a start and an end cell first.', true);
-      setBoardStatus(2, 'Set a start and an end cell first.', true);
+      setBoardStatus(1, 'astar.needStartEnd', null, true);
+      setBoardStatus(2, 'astar.needStartEnd', null, true);
       return;
     }
 
@@ -503,8 +505,8 @@
     clearOverlay(); // wipe any highlighting left over from a previous run
     setInteractive(false);
     runBtn.disabled = true;
-    setBoardStatus(1, 'Searching…', false);
-    setBoardStatus(2, 'Searching…', false);
+    setBoardStatus(1, 'astar.searching', null, false);
+    setBoardStatus(2, 'astar.searching', null, false);
 
     try {
       const [result1, result2] = await Promise.all([
@@ -512,8 +514,8 @@
         runSearch('el2', compareTieBreak),
       ]);
 
-      setBoardStatus(1, describeResult(result1), !result1.found);
-      setBoardStatus(2, describeResult(result2), !result2.found);
+      setBoardStatus(1, ...describeResult(result1), !result1.found);
+      setBoardStatus(2, ...describeResult(result2), !result2.found);
     } finally {
       // Always restore board interactivity, even if something above threw —
       // otherwise a bug in the search could leave the board permanently

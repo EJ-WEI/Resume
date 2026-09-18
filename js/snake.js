@@ -104,8 +104,8 @@
       localStorage.setItem(HIGH_KEY, String(highScore));
       highEl.textContent = highScore;
     }
-    overlayTitle.textContent = 'SELF-TEST FAILED';
-    overlayMsg.textContent = `Score: ${score} — press start to retry`;
+    I18N.bind(overlayTitle, 'snake.failed');
+    I18N.bind(overlayMsg, 'snake.failedMsg', { score });
     overlay.classList.add('show');
   }
 

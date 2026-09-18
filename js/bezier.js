@@ -17,6 +17,7 @@
   const canvas = document.getElementById('bezier-canvas');
   const ctx = canvas.getContext('2d');
   const addBtn = document.getElementById('add-point-btn');
+  const removeBtn = document.getElementById('remove-point-btn');
   const tSlider = document.getElementById('t-slider');
   const tValueEl = document.getElementById('t-value');
   const pointCountEl = document.getElementById('point-count');
@@ -32,14 +33,18 @@
   }
   setupCanvas();
 
-  // Starting control points sketch a simple S-curve so the page shows a
+  // Starting control points sketch a single arch so the page shows a
   // real curve immediately instead of an empty panel.
   let points = [
     { x: 90, y: 370 },
-    { x: 230, y: 70 },
-    { x: 490, y: 390 },
-    { x: 630, y: 90 },
+    { x: 230, y: 75 },
+    { x: 420, y: 65 },
+    { x: 615, y: 200 },
   ];
+
+  // Fewer than two points cannot describe a curve, so the remove button and
+  // double-click removal both stop at this floor.
+  const MIN_POINTS = 2;
 
   let dragIndex = -1;
 
@@ -162,7 +167,8 @@
   function updateStatus() {
     const t = Number(tSlider.value);
     tValueEl.textContent = 't = ' + t.toFixed(3);
-    pointCountEl.textContent = points.length + (points.length === 1 ? ' point' : ' points');
+    I18N.bind(pointCountEl, points.length === 1 ? 'bezier.point' : 'bezier.points', { n: points.length });
+    removeBtn.disabled = points.length <= MIN_POINTS;
   }
 
   function render() {
@@ -182,6 +188,13 @@
       x: margin + Math.random() * (CSS_W - margin * 2),
       y: margin + Math.random() * (CSS_H - margin * 2),
     });
+    render();
+  });
+
+  // Drops the most recently added point (the end of the list).
+  removeBtn.addEventListener('click', () => {
+    if (points.length <= MIN_POINTS) return;
+    points.pop();
     render();
   });
 
@@ -219,7 +232,7 @@
 
   canvas.addEventListener('dblclick', (evt) => {
     const idx = hitTestPoint(toCanvasCoords(evt));
-    if (idx !== -1) {
+    if (idx !== -1 && points.length > MIN_POINTS) {
       points.splice(idx, 1);
       render();
     }

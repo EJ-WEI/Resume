@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bezier Curve — EJ</title>
-<meta name="description" content="An interactive Bezier curve / De Casteljau construction visualizer, built into EJ's resume site">
+<title data-i18n="bezier.title">Bezier Curve — EJ</title>
+<meta name="description" data-i18n="bezier.description" data-i18n-attr="content" content="An interactive Bezier curve / De Casteljau construction visualizer, built into EJ's resume site">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,14 +19,17 @@
   <section data-reveal style="margin-top:12px;">
     <div class="sec-head">
       <span class="sec-num">09</span>
-      <h2 class="sec-title">Bezier Curve Construction</h2>
+      <h2 class="sec-title" data-i18n="bezier.heading">Bezier Curve Construction</h2>
       <div class="sec-rule"></div>
     </div>
 
     <div class="panel-frame">
       <div class="controls-row">
-        <button class="print-btn" id="add-point-btn">+ Add Point</button>
-        <span class="run-status" id="point-count"></span>
+        <div class="point-stepper">
+          <button class="print-btn stepper-btn" id="remove-point-btn" data-i18n="bezier.removePoint" data-i18n-attr="aria-label" aria-label="Remove a control point">&minus;</button>
+          <span class="run-status" id="point-count"></span>
+          <button class="print-btn stepper-btn" id="add-point-btn" data-i18n="bezier.addPoint" data-i18n-attr="aria-label" aria-label="Add a control point">+</button>
+        </div>
       </div>
 
       <div class="t-control">
@@ -36,17 +39,17 @@
       </div>
 
       <div class="legend">
-        <span class="legend-item"><span class="legend-swatch hull"></span>Control polygon</span>
-        <span class="legend-item"><span class="legend-swatch curve"></span>Curve</span>
-        <span class="legend-item"><span class="legend-swatch construct"></span>De Casteljau step</span>
-        <span class="legend-item"><span class="legend-swatch point-t"></span>Point at t</span>
+        <span class="legend-item"><span class="legend-swatch hull"></span><span data-i18n="bezier.hull">Control polygon</span></span>
+        <span class="legend-item"><span class="legend-swatch curve"></span><span data-i18n="bezier.curve">Curve</span></span>
+        <span class="legend-item"><span class="legend-swatch construct"></span><span data-i18n="bezier.construct">De Casteljau step</span></span>
+        <span class="legend-item"><span class="legend-swatch point-t"></span><span data-i18n="bezier.pointAtT">Point at t</span></span>
       </div>
 
       <div class="bezier-canvas-wrap">
         <canvas id="bezier-canvas" width="720" height="460"></canvas>
       </div>
 
-      <p class="hint">Drag a point to move it, double-click a point to remove it, or add more with the button above.</p>
+      <p class="hint" data-i18n="bezier.hint">Drag a point to move it, double-click a point to remove it, or use the +/&minus; buttons to change how many there are (minimum 2).</p>
     </div>
   </section>
 
@@ -54,6 +57,7 @@
 
 </div>
 
+<script src="../js/i18n.js"></script>
 <script src="../js/shell.js"></script>
 <script src="../js/main.js"></script>
 <script src="../js/bezier.js"></script>

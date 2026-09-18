@@ -12,20 +12,24 @@ ej-resume/
 │   ├── snake.html         Snake game page ("Self-Test")
 │   ├── camera.html        Live camera preview page ("Optical Sensor")
 │   ├── astar.html         A* pathfinding visualizer
-│   └── bezier.html        Bezier curve / De Casteljau visualizer
+│   ├── bezier.html        Bezier curve / De Casteljau visualizer
+│   └── green-energy.html  Green energy system: load curve over time-of-use bands
 ├── css/
 │   ├── style.css          Shared styles: nameplate, sections, nav, panel/overlay, tokens
 │   ├── snake.css          Snake-only styles
 │   ├── camera.css         Camera-only styles
 │   ├── astar.css          A*-only styles
-│   └── bezier.css         Bezier-only styles
+│   ├── bezier.css         Bezier-only styles
+│   └── green-energy.css   Green-energy-only styles
 └── js/
+    ├── i18n.js             English / Chinese dictionary + language toggle logic
     ├── shell.js            Renders the shared nav + footer from one page list
     ├── main.js             Shared behavior (scroll reveal)
     ├── snake.js            Game logic
     ├── camera.js            Camera permission + live preview + capture
     ├── astar.js            A* search logic
-    └── bezier.js           Bezier curve / De Casteljau logic
+    ├── bezier.js           Bezier curve / De Casteljau logic
+    └── green-energy.js     Load curve chart, TOU slicing, drag editing
 ```
 
 The nav and footer aren't hand-written on every page — `js/shell.js` renders
@@ -34,6 +38,15 @@ id="site-footer">` placeholders, based on two `data-*` attributes each page
 sets on `<body>`: `data-page` (its id, so shell.js knows which nav link is
 "active") and `data-base` (the relative path back to the site root — `""`
 for `index.html`, `"../"` for anything in `projects/`).
+
+Every page has an **EN / 中文** button in the nav. The HTML is written in
+English; `js/i18n.js` holds the Traditional Chinese text keyed by the
+`data-i18n="..."` attributes on each translatable element, swaps them in
+when Chinese is selected, and remembers the choice in `localStorage`. To
+translate a new string, add `data-i18n="some.key"` to the element and a
+matching `'some.key': '...'` entry to the `ZH` dictionary. Text that a
+script sets at runtime goes through `I18N.bind(el, key, params)` and needs
+both an `EN` and a `ZH` entry.
 
 The camera page asks for permission only when the visitor clicks **Enable
 Camera** — nothing is requested automatically, and nothing is uploaded
@@ -62,6 +75,7 @@ Open `index.html` and search for these placeholders, replacing each:
   with concrete outcomes
 - The Projects section — Flux is filled in; add or edit others
 - The Education section
+- The matching Chinese entries (`resume.*`) in `js/i18n.js`
 
 `snake.html` needs no editing to work, but the high score, speed, and
 colors are all adjustable in `js/snake.js` if you want to tune it.
@@ -72,8 +86,9 @@ To add another page later:
    the `<link>` tags to `../css/style.css`, the `<nav id="site-nav">` /
    `<footer id="site-footer">` placeholders, the `data-page` /
    `data-base="../"` attributes on `<body>`, and the `<script>` tags to
-   `../js/shell.js` and `../js/main.js`.
-2. Add one entry for it to the `PAGES` array at the top of `js/shell.js`.
+   `../js/i18n.js`, `../js/shell.js` and `../js/main.js`.
+2. Add one entry for it to the `PAGES` array at the top of `js/shell.js`,
+   plus a `nav.<id>` entry in `js/i18n.js` for its Chinese nav label.
 
 That's it — every page's nav updates automatically, since they all render
 from that one list.

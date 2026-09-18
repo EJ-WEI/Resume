@@ -1,0 +1,124 @@
+.green-intro{
+  font-family:'Inter', sans-serif;
+  font-size:13.5px;
+  line-height:1.6;
+  color:var(--ink-soft);
+  margin:0 0 18px;
+  max-width:70ch;
+}
+.green-intro em{ color:var(--ink); font-style:normal; }
+
+.day-type-row{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:16px;
+}
+.day-type-label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  letter-spacing:.04em;
+  color:var(--ink-soft);
+  margin-right:4px;
+}
+.mode-pill{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  letter-spacing:.03em;
+  padding:6px 11px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  cursor:pointer;
+  color:var(--ink-soft);
+  transition:border-color .15s ease, color .15s ease, background-color .15s ease;
+}
+.mode-pill input{ accent-color:var(--charge); margin:0; }
+.mode-pill:hover{ color:var(--ink); }
+.mode-pill.active{
+  border-color:var(--charge);
+  color:var(--ink);
+  background:rgba(224,151,46,.1);
+}
+
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin:0 0 14px;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11.5px;
+  color:var(--ink-soft);
+}
+.legend-item{ display:flex; align-items:center; gap:6px; }
+.legend-swatch{
+  width:12px; height:12px;
+  border-radius:2px;
+  display:inline-block;
+  flex-shrink:0;
+}
+/* TOU colours match Flux's TOU_ORDER so a bucket reads the same everywhere. */
+.legend-swatch.tou-peak{ background:rgba(244,100,97,.35); box-shadow:inset 0 0 0 1px #f46461; }
+.legend-swatch.tou-halfPeak{ background:rgba(255,178,122,.35); box-shadow:inset 0 0 0 1px #ffb27a; }
+.legend-swatch.tou-saturdayHalfPeak{ background:rgba(126,200,227,.35); box-shadow:inset 0 0 0 1px #7ec8e3; }
+.legend-swatch.tou-offPeak{ background:rgba(110,167,114,.35); box-shadow:inset 0 0 0 1px #6ea772; }
+.legend-swatch.curve{ background:var(--charge); }
+.legend-swatch.contract{
+  height:0; width:14px;
+  border-top:2px dashed #f46461;
+  border-radius:0;
+}
+
+.green-canvas-wrap{ overflow-x:auto; }
+#green-canvas{
+  display:block;
+  margin:0 auto;
+  background:var(--paper);
+  border:1px solid var(--line);
+  max-width:100%;
+  touch-action:none;
+}
+
+.controls-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin:16px 0;
+  flex-wrap:wrap;
+}
+.run-status{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  letter-spacing:.02em;
+  color:var(--ink-soft);
+}
+
+.tou-stats{
+  width:100%;
+  border-collapse:collapse;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+}
+.tou-stats th, .tou-stats td{
+  padding:7px 10px;
+  border-bottom:1px solid var(--line-soft);
+  text-align:left;
+}
+.tou-stats th{
+  font-weight:500;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  font-size:11px;
+  color:var(--ink-soft);
+  border-bottom:1px solid var(--line);
+}
+.tou-stats th:not(:first-child), .tou-stats td.num{ text-align:right; }
+.tou-stats td.num{ font-variant-numeric:tabular-nums; }
+.tou-stats td:first-child{ color:var(--ink); }
+.tou-stats td:first-child .legend-swatch{ vertical-align:-1px; margin-right:8px; }
+/* Buckets the selected day type never touches (e.g. peak on a non-summer day). */
+.tou-stats tr.empty td{ color:var(--line); }
+.tou-stats tr.empty td:first-child{ color:var(--ink-soft); opacity:.55; }

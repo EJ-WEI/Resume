@@ -30,6 +30,11 @@ body{
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
 }
+/* The Google Fonts above have no CJK glyphs, so when the language toggle
+   sets <html lang="zh-Hant"> fall through to a system Chinese font. */
+:lang(zh){
+  font-family:'Inter', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+}
 
 .wrap{
   max-width:var(--max);
@@ -63,7 +68,7 @@ a:hover{ color:var(--charge-ink); }
   color:var(--ink);
   text-decoration:none;
 }
-.nav-links{ display:flex; gap:18px; }
+.nav-links{ display:flex; align-items:center; gap:18px; }
 .nav-links a{
   font-family:'IBM Plex Mono', monospace;
   font-size:12.5px;
@@ -78,6 +83,20 @@ a:hover{ color:var(--charge-ink); }
   color:var(--ink);
   border-color:var(--charge);
 }
+/* Language toggle (rendered by shell.js at the end of the nav links). */
+.lang-btn{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11.5px;
+  letter-spacing:.06em;
+  line-height:1;
+  background:none;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:5px 8px;
+  cursor:pointer;
+  color:var(--ink-soft);
+}
+.lang-btn:hover{ border-color:var(--charge); color:var(--charge-ink); }
 
 /* ---------- Nameplate ---------- */
 .nameplate{
@@ -357,7 +376,7 @@ footer{
     --card:       #F7F8F6;
   }
   body{ background:#fff; }
-  .print-btn{ display:none; }
+  .print-btn, .lang-btn{ display:none; }
   .topnav{ display:none; }
   .project:hover{ transform:none; }
 }

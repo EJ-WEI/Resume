@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A* Pathfinder — EJ</title>
-<meta name="description" content="An A* pathfinding visualizer, built into EJ's resume site">
+<title data-i18n="astar.title">A* Pathfinder — EJ</title>
+<meta name="description" data-i18n="astar.description" data-i18n-attr="content" content="An A* pathfinding visualizer, built into EJ's resume site">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,64 +19,64 @@
   <section data-reveal style="margin-top:12px;">
     <div class="sec-head">
       <span class="sec-num">08</span>
-      <h2 class="sec-title">Pathfinder — A*</h2>
+      <h2 class="sec-title" data-i18n="astar.heading">Pathfinder — A*</h2>
       <div class="sec-rule"></div>
     </div>
 
     <div class="panel-frame">
-      <div class="mode-select" role="radiogroup" aria-label="Cell mode">
+      <div class="mode-select" role="radiogroup" data-i18n="astar.modeGroup" data-i18n-attr="aria-label" aria-label="Cell mode">
         <div class="mode-row">
           <label class="mode-pill active">
-            <input type="radio" name="mode" value="start" checked> Start
+            <input type="radio" name="mode" value="start" checked> <span data-i18n="astar.start">Start</span>
           </label>
           <span class="legend-swatch start"></span>
-          <span class="mode-hint">Click a grid cell to set it as the starting point.</span>
+          <span class="mode-hint" data-i18n="astar.startHint">Click a grid cell to set it as the starting point.</span>
         </div>
         <div class="mode-row">
           <label class="mode-pill">
-            <input type="radio" name="mode" value="end"> End
+            <input type="radio" name="mode" value="end"> <span data-i18n="astar.end">End</span>
           </label>
           <span class="legend-swatch end"></span>
-          <span class="mode-hint">Click a grid cell to set it as the end point.</span>
+          <span class="mode-hint" data-i18n="astar.endHint">Click a grid cell to set it as the end point.</span>
         </div>
         <div class="mode-row">
           <label class="mode-pill">
-            <input type="radio" name="mode" value="wall"> Wall
+            <input type="radio" name="mode" value="wall"> <span data-i18n="astar.wall">Wall</span>
           </label>
           <span class="legend-swatch wall"></span>
-          <span class="mode-hint">Click a cell, or press and drag, to mark cells as walls.</span>
+          <span class="mode-hint" data-i18n="astar.wallHint">Click a cell, or press and drag, to mark cells as walls.</span>
         </div>
         <div class="mode-row">
           <label class="mode-pill">
-            <input type="radio" name="mode" value="erase"> Erase Wall
+            <input type="radio" name="mode" value="erase"> <span data-i18n="astar.erase">Erase Wall</span>
           </label>
-          <span class="mode-hint">Click a wall, or press and drag, to erase walls.</span>
+          <span class="mode-hint" data-i18n="astar.eraseHint">Click a wall, or press and drag, to erase walls.</span>
         </div>
         <div class="mode-row">
-          <label class="interval-label" for="step-delay">Animation interval (ms)</label>
+          <label class="interval-label" for="step-delay" data-i18n="astar.interval">Animation interval (ms)</label>
           <input type="number" id="step-delay" class="interval-input" min="0" step="10" value="30">
         </div>
       </div>
 
       <div class="controls-row">
-        <button class="print-btn" id="run-btn">Run</button>
-        <button class="print-btn" id="stop-btn" disabled>Stop</button>
-        <button class="print-btn" id="clear-btn">Clear Board</button>
+        <button class="print-btn" id="run-btn" data-i18n="astar.run">Run</button>
+        <button class="print-btn" id="stop-btn" data-i18n="astar.stop" disabled>Stop</button>
+        <button class="print-btn" id="clear-btn" data-i18n="astar.clear">Clear Board</button>
       </div>
 
-      <p class="hint board-caption">Board 1 — baseline A*: when candidates tie exactly, whichever was discovered first wins.</p>
+      <p class="hint board-caption" data-i18n="astar.board1">Board 1 — baseline A*: when candidates tie exactly, whichever was discovered first wins.</p>
       <div class="board-wrap">
         <div id="board" class="astar-board"></div>
       </div>
       <p class="run-status board-status" id="board1-status"></p>
 
-      <p class="hint board-caption">Board 2 — same start/end/walls, but ties are broken toward the candidate already closer to the target.</p>
+      <p class="hint board-caption" data-i18n="astar.board2">Board 2 — same start/end/walls, but ties are broken toward the candidate already closer to the target.</p>
       <div class="board-wrap">
         <div id="board2" class="astar-board mirror"></div>
       </div>
       <p class="run-status board-status" id="board2-status"></p>
 
-      <p class="hint">Pick a mode above, then click (or press and drag, for walls) on the grid. Use Clear Board to reset everything.</p>
+      <p class="hint" data-i18n="astar.hint">Pick a mode above, then click (or press and drag, for walls) on the grid. Use Clear Board to reset everything.</p>
     </div>
   </section>
 
@@ -84,6 +84,7 @@
 
 </div>
 
+<script src="../js/i18n.js"></script>
 <script src="../js/shell.js"></script>
 <script src="../js/main.js"></script>
 <script src="../js/astar.js"></script>
